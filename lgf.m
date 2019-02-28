@@ -54,5 +54,5 @@ for i=1:size(A,2)
    end
 end
 
-    
+ imagesc(A)
     
