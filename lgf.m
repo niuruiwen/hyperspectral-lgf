@@ -40,19 +40,48 @@ for i=1:size(IndP,3)
     end
 end
 
-% stack spectral and spatial features
+% reshape for consistency
 X_Spat=reshape(X_Spat,[21025 D])';
-X_Sta=[X_Spec;X_Spat];
-% test adjacency matrix
-A=zeros(size(X_Sta,2),size(X_Sta,2));
 
+% normalize spec and spat to same interval [0,1]
+X_Spat=X_Spat./max(max(X_Spat));
+X_Spec=X_Spec./max(max(X_Spec));
+
+% stack spectral and spatial features
+X_Sta=[X_Spec;X_Spat];
+
+% prefill adjacency matrix
+A=zeros(size(X_Sta,2),size(X_Sta,2));
 
 
 for i=1:size(A,2)
    for j=1:size(A,2)
-       A(i,j)=sqrt(X_Sta(1,i)^2 + X_Sta(1,j)^2);
+       A(i,j)=sqrt(sum(X_Sta(:,i).*X_Sta(:,j)));
    end
 end
 
- imagesc(A)
+W=eye(248);
+N=21025;
+B=220;
+D=28;
+d=100;
+
+save('A_Sta.mat', 'A', '-v7.3');
+
+% size of sliding window
+S=7;
+% knn sliding window
+NN=zeros(S);
+mx=4;
+my=4;
+
+win=A(1:S,1:S);
+
+for i=1:length(NN)
+    for j=1:length(NN)
+       NN(i,j)=sqrt(sum(win(mx,my).*win(i,j)));
+    end
+end
+
+
     
