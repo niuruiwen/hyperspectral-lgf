@@ -5,6 +5,7 @@ function A = blockProcessLGF(X, K, k)
 %   k = number of adjacent pixels
 %
 
+% get the dimensions of the input image
 [R,C,T] = size(X);
 
 % reshape 145x145 image to column vector
@@ -87,17 +88,21 @@ for r = 1:size(A,1)
         Db(l) = sqrt(sum(d(5:end)));
     end;
    
-    % find the kNN in each distance vector
+    % find the kNN in the spectral distance vector
     [da, i] = sort(Da);
     Da = 0 * Da;
-    Da(i(1:k)) = 1;
+    Da(i(1:k+1)) = 1;
     
+    % find the kNN in the spatial distance vector
     [db, i] = sort(Db);
     Db = 0 * Db;
-    Db(i(1:k)) = 1;
+    Db(i(1:k+1)) = 1;
 
     % write back the distances to the adjacency matrix
     A(r,L) = Da .* Db;
+    
+    % set the diagonal to zero
+    A(r,r) = 0;
 end;
 
 return;
