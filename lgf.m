@@ -64,6 +64,9 @@ for i = 1:size(A, 1)
 end
 close(h);
 
+%%% fill in lower triangle
+A = A + A';
+
 W = eye(248);
 N = 21025;
 B = 220;
